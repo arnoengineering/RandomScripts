@@ -1,0 +1,57 @@
+import time as t
+import asyncio
+
+
+async def ques_time():
+    while True:
+        el_t = (t.time() - in_t) / 60  # converts to minutes
+        rem_t = tot_t - el_t
+        ques_rem = ques - ques_ans
+
+        # initial values
+        time_qin = tot_t / ques
+        time_10qin = tot_t * 10 / ques
+
+        # current values
+        time_q = rem_t / ques_rem
+        time_10q = rem_t * 10 / ques_rem
+        q_10min_in = ques * 10 / tot_t
+        q_10min = ques_rem * 10 / rem_t
+
+        # on track
+        goal_ques = el_t / time_qin  # the current amount of questions done: goal
+        behind = round(goal_ques - ques_ans)
+        if behind > 0:  # Behind how many Q
+            on_track = 'Behind'
+        else:
+            on_track = 'ahead'
+        print('you are {} by {} questions'.format(on_track, abs(behind)))
+
+        await asyncio.sleep(30)
+
+
+# changes ans based on input
+async def ques_in():
+    global ques_ans
+    q_in = input('Answered Questions: ')
+
+    # if input then adjusts
+    if len(q_in) > 0:
+        ques_ans = int(q_in)
+    await asyncio.sleep(10)
+
+
+# calls all functions
+async def main():
+    await asyncio.wait([
+        ques_time(),
+        ques_in()])
+
+in_t = t.time()
+
+ques = int(input('Number of questions: '))
+tot_t = int(input('Time limit: ')) * 60  # todo convert from hours to min
+
+ques_ans = 0
+
+asyncio.run(main())
